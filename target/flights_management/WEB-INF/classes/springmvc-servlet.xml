@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
+	<!-- Controller类要经过springIoc(控制反转)的实例化 -->
+	<!-- 扫描controller层的注解 -->
+	<context:component-scan base-package="cn.at.controller"/>
+	
+	<!-- 启动注解自动装配 -->
+	<mvc:annotation-driven>
+			<!-- 配置消息转换器 -->
+			<mvc:message-converters>
+			<!-- String类型的消息转换器 -->
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				
+				<!-- json格式的消息转换器 -->
+				<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json;charset=UTF-8</value>
+						</list>
+					</property>
+					<!-- 配置fastjson时间转换风格 -->
+					<property name="features">
+						<list>
+							<value>WriteDateUseDateFormat</value>
+						</list>
+					</property>
+				
+				</bean>
+			</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<!-- 配置springmvc视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+	
+	<!-- 配置加载静态资源(css  js  等) -->
+		<mvc:resources location="/statics/" mapping="/statics/**"/>
+		
+ 	<!-- 配置文件上传 -->
+ 		<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+			<property name="maxUploadSize" value="500000"/>
+			<property name="defaultEncoding" value="UTF-8"/>
+		</bean> 
+		
+	<!-- 配置拦截器 -->
+	<!-- <mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/dev/flatform/**" />
+				<bean class="cn.appsys.interceptor.DevInterceptor"/>
+			</mvc:interceptor>
+		</mvc:interceptors>
+	
+	<mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/manager/backend/**" />
+				<bean class="cn.appsys.interceptor.BackendInterceptor"/>
+			</mvc:interceptor>
+		</mvc:interceptors> -->
+	
+</beans>
